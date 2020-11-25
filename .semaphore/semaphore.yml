@@ -1,14 +1,20 @@
 version: v1.0
-name: Docker
+name: Go
 agent:
   machine:
     type: e1-standard-2
     os_image: ubuntu1804
 blocks:
-  - name: Build
+  - name: Test
     task:
       jobs:
-        - name: docker build
+        - name: go test
           commands:
+            - sem-version go 1.11
+            - "export GO111MODULE=on"
+            - "export GOPATH=~/go"
+            - "export PATH=/home/semaphore/go/bin:$PATH"
             - checkout
-            - docker build -t your-image .
+            - go get ./...
+            - go test ./...
+            - go build -v .
